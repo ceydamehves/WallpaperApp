@@ -1,9 +1,11 @@
 import React from 'react';
 import {View,
         Text,
+        TouchableWithoutFeedback,
         Dimensions,
         ActivityIndicator,
         FlatList,
+        Animated,
         Image} from 'react-native';
 import axios from 'axios';
 
@@ -14,12 +16,16 @@ class App extends React.Component {
     super()
     this.state = {
       isLoading: true,
-      images:[]
+      images:[],
+      scale: new Animated.Value(1),
+      isImageFocused: false//when you scroll ,it will not swipe.
     };
-    this.loadWallpapers = this.loadWallpapers.bind(this)
-    this.renderItem = this.renderItem.bind(this)
+    this.scale = {
+      transform:[{scale:this.state.scale}]//this line coming from line 74
+    }
+
   }
-  loadWallpapers(){
+  loadWallpapers = () => {
     axios.get('https://api.unsplash.com/photos/random?count=20&client_id=97c550dfd52a738b3feb526e042f65759e5c5bba32892628264435b8361bba7b')//My Unsplash Access ID
     .then(function(response){
     console.log(response.data);
@@ -36,14 +42,43 @@ class App extends React.Component {
   componentDidMount(){
     this.loadWallpapers()
   }
-    renderItem(image){
+//arrow function with item parameter
+  showControl = (item) => {
+    this.setState((state) => ({
+      isImageFocused: !state.isImageFocused
+    }), () => {
+      if(this.state.isImageFocused)//when tapping
+      {
+        Animated.spring(this.state.scale,{
+          toValue:0.8
+        }).start()
+      }
+      else 
+      {
+        Animated.spring(this.state.scale,{
+          toValue:1
+        }).start()
+      }
+    })
+  }
+
+    renderItem = ({item}) => {
       return(
-        <View style={{height,width}}>
-          <Image style={{flex:1,height:null,width:null}}
-          source={{uri:image.urls.regular}}
-          />
-        </View>
-      )
+        <View style={{flex:1}}>
+          <View style={{backgroundColor:'black',
+                        alignItems:'center',justifyContent:'center',
+                        position:'absolute',top:0,bottom:0,left:0,right:0}}>
+              <ActivityIndicator size="large" color="grey"/>
+          </View>
+            <TouchableWithoutFeedback onPress = {() =>this.showControl(item)}>
+              <Animated.View style={[{height,width},this.scale]}>
+                <Image style={{flex:1,height:null,width:null}}
+                source={{uri:item.urls.regular}}
+                />
+                </Animated.View>
+              </TouchableWithoutFeedback>
+          </View>
+      )//replaced view at 74 to Animated.View
 
     }
     render (){
@@ -62,8 +97,10 @@ class App extends React.Component {
             <FlatList
               horizontal
               pagingEnabled
+              scrollEnabled={!this.state.isImageFocused} //when u tap the image, swipe is disabled.
               data={this.state.images}
-              renderItem={(({item})=>this.renderItem(item))}
+              renderItem={this.renderItem}
+              keyExtractor={item => item.id}
             />
           </View>
         )
