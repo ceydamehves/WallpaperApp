@@ -22,7 +22,11 @@ class App extends React.Component {
     };
     this.scale = {
       transform:[{scale:this.state.scale}]//this line coming from line 74
-    }
+    };
+    this.BarY = this.state.scale.interpolate({
+      inputRange:[0.8,1],
+      outputRange:[0,-80]
+    })
 
   }
   loadWallpapers = () => {
@@ -77,6 +81,14 @@ class App extends React.Component {
                 />
                 </Animated.View>
               </TouchableWithoutFeedback>
+              <Animated.View style={{
+                backgroundColor:'white',
+                position:'absolute',
+                height: 80,
+                left: 0,
+                bottom: this.BarY,
+                right: 0
+              }}/>
           </View>
       )//replaced view at 74 to Animated.View
 
