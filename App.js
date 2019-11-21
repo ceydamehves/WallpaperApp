@@ -2,6 +2,7 @@ import React from 'react';
 import {View,
         Text,
         TouchableWithoutFeedback,
+        TouchableOpacity,
         Dimensions,
         ActivityIndicator,
         FlatList,
@@ -82,13 +83,36 @@ class App extends React.Component {
                 </Animated.View>
               </TouchableWithoutFeedback>
               <Animated.View style={{
-                backgroundColor:'white',
+                borderRadius:20,
+                borderWidth:2,
+                backgroundColor:'#90a4ae',
+                flexDirection: 'row',
+                justifyContent: 'space-around',
                 position:'absolute',
                 height: 80,
                 left: 0,
                 bottom: this.BarY,
                 right: 0
-              }}/>
+              }}>
+              <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                <TouchableOpacity activeOpacity={0.4} onPress={() => alert('Load Images')}>
+                <Image style={{width: Dimensions.get('window').width * 0.1,height: Dimensions.get('window').width * 0.1,}}
+                    source={require ('C:/WallpaperApp/assets/arrows.png')}/>
+                </TouchableOpacity>
+              </View>
+              <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                <TouchableOpacity activeOpacity={0.4} onPress={() => alert('Load Images')}>
+                <Image style={{width: Dimensions.get('window').width * 0.1,height: Dimensions.get('window').width * 0.1,}}
+                    source={require ('C:/WallpaperApp/assets/download.png')}/>
+                </TouchableOpacity>
+              </View>
+              <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                <TouchableOpacity activeOpacity={0.4} onPress={() => alert('Load Images')}>
+                <Image style={{width: Dimensions.get('window').width * 0.1,height: Dimensions.get('window').width * 0.1,}}
+                    source={require ('C:/WallpaperApp/assets/share.png')}/>
+                </TouchableOpacity>
+              </View>
+              </Animated.View>
           </View>
       )//replaced view at 74 to Animated.View
 
